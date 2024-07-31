@@ -1,9 +1,10 @@
-import 'package:dyshez/Utils/Navigation/navegationAnimationRightLeft.dart';
+import 'package:dyshez/Utils/dialogs/register_dialog.dart';
 import 'package:dyshez/view/components/Logo/logo_image.dart';
 import 'package:dyshez/view/components/buttons/buttons.dart';
 import 'package:dyshez/view/components/text_field/text_field.dart';
-import 'package:dyshez/view/pages/verify_email/verify_email.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:dyshez/view_model/register_view_model.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,27 +14,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  //variables
   bool _obscureText = true;
   bool _obscureTextRepeat = true;
 
-  //Controllers
-  final TextEditingController userNameController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passwordControllerRepeat =
-      TextEditingController();
-
   @override
   void dispose() {
-    userNameController.dispose();
-    nameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    passwordController.dispose();
-    passwordControllerRepeat.dispose();
+    Provider.of<RegisterViewModel>(context, listen: false).disposeControllers();
     super.dispose();
   }
 
@@ -56,7 +42,8 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  registerForm() {
+  Widget registerForm() {
+    final registerViewModel = Provider.of<RegisterViewModel>(context);
     return Center(
       child: Column(
         children: [
@@ -69,40 +56,46 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           TextFieldComponent(
-            controller: userNameController,
+            controller: registerViewModel.controllers['Username']!,
             hintText: 'Username',
             prefixIcon: Icons.alternate_email_rounded,
+            fieldType: TextInputType.text,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           TextFieldComponent(
-            controller: nameController,
+            controller: registerViewModel.controllers['Nombre']!,
             hintText: 'Nombre',
             prefixIcon: Icons.person_outline_rounded,
+            fieldType: TextInputType.text,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           TextFieldComponent(
-            controller: emailController,
+            controller: registerViewModel.controllers['Email']!,
             hintText: 'Email',
             prefixIcon: Icons.email_outlined,
+            fieldType: TextInputType.emailAddress,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           TextFieldComponent(
-            controller: phoneController,
+            controller: registerViewModel.controllers['Teléfono']!,
             hintText: 'Teléfono',
             prefixIcon: Icons.phone_outlined,
+            fieldType: TextInputType.number,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           TextFieldComponent(
-            controller: passwordController,
+            controller: registerViewModel.controllers['Contraseña']!,
             hintText: 'Contraseña',
             obscureText: _obscureText,
+            fieldType: TextInputType.text,
             onChanged: (text) {
               setState(() {
                 _obscureText = text.isEmpty ? true : _obscureText;
               });
             },
             prefixIcon: Icons.lock_outlined,
-            suffixIcon: passwordController.text.isEmpty
+            suffixIcon: registerViewModel
+                    .controllers['Contraseña']!.text.isEmpty
                 ? null
                 : IconButton(
                     icon: Icon(
@@ -118,16 +111,18 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           TextFieldComponent(
-            controller: passwordControllerRepeat,
+            controller: registerViewModel.controllers['Verificar contraseña']!,
             hintText: 'Verificar contraseña',
             obscureText: _obscureTextRepeat,
+            fieldType: TextInputType.text,
             onChanged: (text) {
               setState(() {
                 _obscureTextRepeat = text.isEmpty ? true : _obscureTextRepeat;
               });
             },
             prefixIcon: Icons.lock_outlined,
-            suffixIcon: passwordControllerRepeat.text.isEmpty
+            suffixIcon: registerViewModel
+                    .controllers['Verificar contraseña']!.text.isEmpty
                 ? null
                 : IconButton(
                     icon: Icon(
@@ -147,13 +142,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ButtonsComponents(
             color: Colors.black,
             title: 'Crear cuenta',
-            onPress: () {
-              Navigator.push(
-                context,
-                crearRuta(
-                    context, const VerifyEmailPage()), // Navega al Dashboard
-              );
-            },
+            onPress: () => registerUser(context),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Container(

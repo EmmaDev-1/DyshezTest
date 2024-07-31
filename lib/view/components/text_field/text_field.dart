@@ -7,6 +7,7 @@ class TextFieldComponent extends StatelessWidget {
   final Function(String)? onChanged;
   final IconData? prefixIcon;
   final Widget? suffixIcon;
+  final TextInputType fieldType;
   const TextFieldComponent({
     required this.controller,
     required this.hintText,
@@ -14,6 +15,7 @@ class TextFieldComponent extends StatelessWidget {
     this.onChanged,
     this.prefixIcon,
     this.suffixIcon,
+    required this.fieldType,
   });
 
   @override
@@ -77,6 +79,7 @@ class TextFieldComponent extends StatelessWidget {
               : null,
           suffixIcon: suffixIcon,
         ),
+        keyboardType: fieldType,
       ),
     );
   }

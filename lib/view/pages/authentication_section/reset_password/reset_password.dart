@@ -1,18 +1,18 @@
-import 'package:dyshez/Utils/Navigation/navigationAnimationLeftRight.dart';
+import 'package:dyshez/Utils/dialogs/email_confirmation_dialog.dart';
+import 'package:dyshez/Utils/navigation/navegationAnimationRightLeft.dart';
 import 'package:dyshez/view/components/Logo/logo_image.dart';
-import 'package:dyshez/view/components/buttons/buttons.dart';
 import 'package:dyshez/view/components/text_field/text_field.dart';
-import 'package:dyshez/view/pages/login/login.dart';
+import 'package:dyshez/view/pages/authentication_section/register/register.dart';
 import 'package:flutter/material.dart';
 
-class VerifyEmailPage extends StatefulWidget {
-  const VerifyEmailPage({super.key});
+class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({super.key});
 
   @override
-  State<VerifyEmailPage> createState() => _VerifyEmailPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
-class _VerifyEmailPageState extends State<VerifyEmailPage> {
+class _ResetPasswordPageState extends State<ResetPasswordPage> {
   //Controllers
   final TextEditingController verifyEmailController = TextEditingController();
 
@@ -33,54 +33,74 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
             SizedBox(height: MediaQuery.of(context).size.height * 0.07),
             const LogoImageComponent(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-            verifyForm()
+            resetForm()
           ],
         ),
       )),
     );
   }
 
-  verifyForm() {
+  resetForm() {
     return Center(
       child: Column(
         children: [
           Text(
-            'Verificar email',
+            'Recuperar Cuenta',
             style: TextStyle(
                 fontSize: MediaQuery.of(context).size.height * 0.04,
                 fontFamily: 'QuickSand-Bold',
                 color: Colors.black),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          Text(
-            'Enviaremos un código a tu email.',
-            style: TextStyle(
-                fontSize: MediaQuery.of(context).size.height * 0.025,
-                fontWeight: FontWeight.w500,
-                fontFamily: 'QuickSand',
-                color: Colors.black),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.025),
           TextFieldComponent(
             controller: verifyEmailController,
-            hintText: 'Email',
-            prefixIcon: Icons.email_outlined,
+            hintText: 'Correo electrónico',
+            prefixIcon: Icons.person_outline_rounded,
+            fieldType: TextInputType.emailAddress,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.025),
-          ButtonsComponents(
-            color: Colors.black,
-            title: 'Confirmar',
-            onPress: () {},
+          Container(
+            height: MediaQuery.of(context).size.height * 0.07,
+            width: MediaQuery.of(context).size.width * 0.85,
+            child: ElevatedButton(
+              onPressed: () {
+                String email = verifyEmailController.text;
+                confirmEmailForResetPassword(context, email);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Restablecer  ",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontFamily: 'QuickSand-Bold',
+                      color: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Colors.white,
+                    size: 20,
+                  )
+                ],
+              ),
+            ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Container(
             height: MediaQuery.of(context).size.height * 0.045,
             child: TextButton(
               onPressed: () {
-                Navigator.pushAndRemoveUntil(
+                Navigator.push(
                   context,
-                  crearRutaIzquierdaADerecha(context, const LoginPage()),
-                  (Route<dynamic> route) => false,
+                  crearRuta(context, const RegisterPage()),
                 );
               },
               child: RichText(
@@ -92,9 +112,9 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                       fontWeight: FontWeight.w600,
                       color: Colors.black),
                   children: [
-                    const TextSpan(text: '¿Ya tienes una cuenta? '),
+                    const TextSpan(text: '¿No tuenes cuenta? '),
                     TextSpan(
-                      text: 'Inicia Sesión',
+                      text: 'Crea una nueva cuenta',
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.04,
                         fontFamily: 'QuickSand-Bold',
