@@ -7,6 +7,7 @@ class AuthViewModel with ChangeNotifier {
   UserModel? _user;
   UserModel? get user => _user;
   final supabase = Supabase.instance.client;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> signUp(String username, String email, String phone, String name,
       String password) async {
@@ -120,7 +121,10 @@ class AuthViewModel with ChangeNotifier {
   }
 
   Future<void> signOut() async {
+    // Cerrar sesión de Supabase
     await supabase.auth.signOut();
+    // Cerrar sesión de Google
+    await _googleSignIn.signOut();
     _user = null;
     notifyListeners();
   }

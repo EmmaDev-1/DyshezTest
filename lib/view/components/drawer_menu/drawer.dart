@@ -1,6 +1,5 @@
-import 'package:dyshez/Utils/navigation/navigationAnimationLeftRight.dart';
+import 'package:dyshez/Utils/dialogs/sign_out_dialog.dart';
 import 'package:dyshez/view/components/drawer_menu/drawer_tile.dart';
-import 'package:dyshez/view/pages/authentication_section/login/login.dart';
 import 'package:flutter/material.dart';
 
 class DrawerMenu extends StatelessWidget {
@@ -67,12 +66,8 @@ class DrawerMenu extends StatelessWidget {
               Icons.exit_to_app_rounded,
               color: Colors.white,
             ),
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                crearRutaIzquierdaADerecha(context, const LoginPage()),
-                (Route<dynamic> route) => false,
-              );
+            onTap: () async {
+              await SignOutUser(context);
             },
           ),
         ],

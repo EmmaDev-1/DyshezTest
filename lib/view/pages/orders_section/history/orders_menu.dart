@@ -1,14 +1,32 @@
+// Archivo: orders_menu.dart
 import 'package:dyshez/Utils/navigation/navegationAnimationRightLeft.dart';
 import 'package:dyshez/view/components/app_bar/app_bar.dart';
 import 'package:dyshez/view/components/drawer_menu/drawer.dart';
 import 'package:dyshez/view/pages/orders_section/history/order_view.dart';
+import 'package:dyshez/view_model/order_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
-class OrdersMenuPage extends StatelessWidget {
+class OrdersMenuPage extends StatefulWidget {
   const OrdersMenuPage({super.key});
 
   @override
+  _OrdersMenuPageState createState() => _OrdersMenuPageState();
+}
+
+class _OrdersMenuPageState extends State<OrdersMenuPage> {
+  @override
+  void initState() {
+    super.initState();
+    final orderViewModel = Provider.of<OrderViewModel>(context, listen: false);
+    orderViewModel.fetchOrders(orderViewModel.supabase.auth.currentUser!.id);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final orderViewModel = Provider.of<OrderViewModel>(context);
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: CustomAppBar(title: 'Historial'),
@@ -29,65 +47,24 @@ class OrdersMenuPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: ListView(
-                    children: [
-                      buildOrderItem(
-                          context,
-                          'Habibi',
-                          '3 artículos · \$480.00',
-                          'Dyshez Direct',
-                          'Abr 13 · Completado',
-                          'assets/images/habibi.png',
-                          'assets/images/arrowsTransaction.png'),
-                      buildOrderItem(
-                          context,
-                          'Boston’s Pizza',
-                          '3 artículos · \$500.00',
-                          'Promo Live',
-                          'Abr 13 · No presentado',
-                          'assets/images/boston.png',
-                          'assets/images/arrowsTransaction.png'),
-                      buildOrderItem(
-                          context,
-                          'Dirty Grill',
-                          '\$0.00',
-                          'Promo Live',
-                          'Abr 13 · Presentado',
-                          'assets/images/dirty.png',
-                          'assets/images/arrowsTransaction.png'),
-                      buildOrderItem(
-                          context,
-                          'Tabom',
-                          '2 artículos · \$199.00',
-                          'Dyshez Direct',
-                          'Abr 13 · Completado',
-                          'assets/images/tabom.png',
-                          'assets/images/arrowsTransaction.png'),
-                      buildOrderItem(
-                          context,
-                          'Roca',
-                          '1 artículo · \$40.00',
-                          'Dyshez Direct',
-                          'Abr 13 · Completado',
-                          'assets/images/roca.png',
-                          'assets/images/arrowsTransaction.png'),
-                      buildOrderItem(
-                          context,
-                          'Habibi',
-                          '3 artículos · \$480.00',
-                          'Dyshez Direct',
-                          'Abr 13 · Completado',
-                          'assets/images/habibi.png',
-                          'assets/images/arrowsTransaction.png'),
-                      // Añade más elementos según sea necesario
-                    ],
-                  ),
-                ),
+                child: orderViewModel.orders.isEmpty
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: orderViewModel.orders.length,
+                        itemBuilder: (context, index) {
+                          final order = orderViewModel.orders[index];
+                          return buildOrderItem(
+                            context,
+                            order.restaurantName,
+                            '${order.orderDetailsTotalQuantity} artículos · \$${order.orderTotalPay}',
+                            order.orderType,
+                            order.ordersDatetime,
+                            order.restaurantLogo,
+                            order.orderType,
+                            order.ordersStatus,
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -96,11 +73,39 @@ class OrdersMenuPage extends StatelessWidget {
     );
   }
 
-  Widget buildOrderItem(BuildContext context, String title, String subtitle,
-      String detail, String date, String imagePath, String icon) {
+  Widget buildOrderItem(
+      BuildContext context,
+      String title,
+      String subtitle,
+      String detail,
+      DateTime dateTime,
+      String imagePath,
+      String orderType,
+      String orderStatus) {
+    String icon;
+    if (orderType == 'Dyshez Direct') {
+      icon = 'assets/images/dyshezDirect.png';
+    } else if (orderType == 'Promo Live') {
+      icon = 'assets/images/promoLive.png';
+    } else {
+      icon = 'assets/images/defaultIcon.png';
+    }
+
+    final formattedDate = DateFormat('MMM d, h:mm a').format(dateTime);
+
+    Color color;
+
+    if (orderStatus == 'Completado' || orderStatus == 'Presentado') {
+      color = Colors.green;
+    } else if (orderStatus == 'No presentado') {
+      color = Colors.red;
+    } else {
+      color = Colors.grey;
+    }
+
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage: AssetImage(imagePath),
+        backgroundImage: NetworkImage(imagePath),
         radius: 24,
       ),
       title: Text(
@@ -113,9 +118,33 @@ class OrdersMenuPage extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(subtitle),
-          Text(detail),
-          Text(date, style: TextStyle(color: Colors.grey)),
+          Text(
+            subtitle,
+            style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: 'QuickSand',
+                fontSize: 13),
+          ),
+          Text(
+            detail,
+            style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontFamily: 'QuickSand',
+                fontSize: 13),
+          ),
+          Text(
+            '$formattedDate',
+            style: const TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'QuickSand',
+                fontSize: 13),
+          ),
+          Text(
+            '$orderStatus',
+            style: TextStyle(
+                color: color, fontFamily: 'QuickSand-Bold', fontSize: 14),
+          )
         ],
       ),
       trailing: Row(

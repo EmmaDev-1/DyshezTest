@@ -1,3 +1,4 @@
+// Archivo: main.dart
 import 'package:dyshez/Utils/deep_links/deeplink_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'view_model/login_view_model.dart';
 import 'view_model/register_view_model.dart';
 import 'view_model/auth_view_model.dart';
+import 'view_model/order_view_model.dart';
 import 'Utils/supabase_conection/supabase_client.dart';
 
 void main() async {
@@ -31,6 +33,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => RegisterViewModel()),
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_) => OrderViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
