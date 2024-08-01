@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:dyshez/Utils/dialogs/sign_out_dialog.dart';
 import 'package:dyshez/view/components/drawer_menu/drawer_tile.dart';
-import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DrawerMenu extends StatelessWidget {
   const DrawerMenu({super.key});
@@ -29,7 +30,14 @@ class DrawerMenu extends StatelessWidget {
               color: Colors.white,
             ),
             onTap: () {
-              Navigator.pop(context);
+              Fluttertoast.showToast(
+                msg: "Sección habilitada próximamente",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 16.0,
+              );
             },
           ),
           DrawerTile(
@@ -49,7 +57,14 @@ class DrawerMenu extends StatelessWidget {
               color: Colors.white,
             ),
             onTap: () {
-              Navigator.pop(context);
+              Fluttertoast.showToast(
+                msg: "Sección habilitada próximamente",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 16.0,
+              );
             },
           ),
           SizedBox(
@@ -66,8 +81,8 @@ class DrawerMenu extends StatelessWidget {
               Icons.exit_to_app_rounded,
               color: Colors.white,
             ),
-            onTap: () async {
-              await SignOutUser(context);
+            onTap: () {
+              SignOutUser(context);
             },
           ),
         ],

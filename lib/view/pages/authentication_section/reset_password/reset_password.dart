@@ -100,7 +100,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  crearRuta(context, const RegisterPage()),
+                  crearRuta(const RegisterPage()),
                 );
               },
               child: RichText(

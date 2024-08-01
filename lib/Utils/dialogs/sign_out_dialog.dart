@@ -7,20 +7,9 @@ import 'package:dyshez/view_model/auth_view_model.dart';
 Future<void> SignOutUser(BuildContext context) async {
   final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
-  try {
-    await authViewModel.signOut();
+  Navigator.of(context).pushReplacement(
+    crearRutaIzquierdaADerecha(context, LoginPage()),
+  );
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      crearRutaIzquierdaADerecha(context, const LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-  } catch (e) {
-    print('Entro aqui');
-    Navigator.pushAndRemoveUntil(
-      context,
-      crearRutaIzquierdaADerecha(context, const LoginPage()),
-      (Route<dynamic> route) => false,
-    );
-  }
+  await authViewModel.signOut();
 }

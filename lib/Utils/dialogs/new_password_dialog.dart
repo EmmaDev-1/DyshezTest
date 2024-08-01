@@ -16,7 +16,7 @@ Future<void> setNewPassword(BuildContext context, String password) async {
     showSnackBar(context, 'Contraseña cambiada');
     Navigator.push(
       context,
-      crearRuta(context, const LoginPage()),
+      crearRuta(const LoginPage()),
     );
   } catch (e) {
     Navigator.pop(context); // Cerrar el diálogo de carga

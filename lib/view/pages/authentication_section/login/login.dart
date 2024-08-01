@@ -7,6 +7,7 @@ import 'package:dyshez/view/pages/authentication_section/register/register.dart'
 import 'package:dyshez/view/pages/authentication_section/reset_password/reset_password.dart';
 import 'package:dyshez/view_model/login_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -106,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  crearRuta(context, const RegisterPage()),
+                  crearRuta(const RegisterPage()),
                 );
               },
               child: RichText(
@@ -144,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  crearRuta(context, const ResetPasswordPage()),
+                  crearRuta(const ResetPasswordPage()),
                 );
               },
               child: RichText(
@@ -223,7 +224,16 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           GestureDetector(
-            onTap: () async {},
+            onTap: () async {
+              Fluttertoast.showToast(
+                msg: "Función habilitada próximamente",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 16.0,
+              );
+            },
             child: Container(
               height: MediaQuery.of(context).size.height * 0.06,
               width: MediaQuery.of(context).size.width * 0.85,

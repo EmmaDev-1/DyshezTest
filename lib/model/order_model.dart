@@ -1,8 +1,10 @@
+// Archivo: order_model.dart
 class OrderModel {
   final int ordersId;
   final String userId;
   final int restaurantId;
   final String restaurantName;
+  final String restaurantLogo;
   final int orderDetailsTotalQuantity;
   final String orderType;
   final DateTime ordersDatetime;
@@ -13,13 +15,13 @@ class OrderModel {
   final double orderDeliveryPay;
   final double orderTipPay;
   final String orderPayMethod;
-  final String restaurantLogo;
 
   OrderModel({
     required this.ordersId,
     required this.userId,
     required this.restaurantId,
     required this.restaurantName,
+    required this.restaurantLogo,
     required this.orderDetailsTotalQuantity,
     required this.orderType,
     required this.ordersDatetime,
@@ -30,7 +32,6 @@ class OrderModel {
     required this.orderDeliveryPay,
     required this.orderTipPay,
     required this.orderPayMethod,
-    required this.restaurantLogo,
   });
 
   factory OrderModel.fromMap(Map<String, dynamic> map) {
@@ -39,6 +40,7 @@ class OrderModel {
       userId: map['user_id'],
       restaurantId: map['restaurant_id'],
       restaurantName: map['restaurant_name'],
+      restaurantLogo: map['restaurants']['restaurant_logo'],
       orderDetailsTotalQuantity: map['order_details_total_quantity'],
       orderType: map['order_type'],
       ordersDatetime: DateTime.parse(map['orders_datetime']),
@@ -49,7 +51,6 @@ class OrderModel {
       orderDeliveryPay: map['order_delivery_pay'],
       orderTipPay: map['order_tip_pay'],
       orderPayMethod: map['order_pay_method'],
-      restaurantLogo: map['restaurants']['restaurant_logo'],
     );
   }
 }

@@ -14,7 +14,7 @@ class DrawerTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10, left: 20.0),
+      padding: const EdgeInsets.only(top: 10),
       child: ListTile(
         title: Text(
           title,

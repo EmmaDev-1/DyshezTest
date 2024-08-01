@@ -1,7 +1,7 @@
 import 'package:dyshez/Utils/dialogs/show_loading.dart';
 import 'package:dyshez/Utils/dialogs/show_snackbar.dart';
 import 'package:dyshez/Utils/navigation/navegationAnimationRightLeft.dart';
-import 'package:dyshez/view/pages/orders_section/history/orders_menu.dart';
+import 'package:dyshez/view/pages/orders_section/orders_menu.dart';
 import 'package:dyshez/view_model/auth_view_model.dart';
 import 'package:dyshez/view_model/register_view_model.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ Future<void> verifyAcount(
     // Navegar a la página de ordenes
     Navigator.push(
       context,
-      crearRuta(context, const OrdersMenuPage()),
+      crearRuta(const OrdersMenuPage()),
     );
 
     showWelcomeDialog(context, username);

@@ -1,5 +1,5 @@
 import 'package:dyshez/Utils/navigation/navegationAnimationRightLeft.dart';
-import 'package:dyshez/view/pages/orders_section/history/orders_menu.dart';
+import 'package:dyshez/view/pages/orders_section/orders_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dyshez/utils/dialogs/error_dialog.dart';
@@ -34,7 +34,7 @@ Future<void> loginUser(BuildContext context) async {
     // Navegar a la página de ordenes
     Navigator.push(
       context,
-      crearRuta(context, const OrdersMenuPage()),
+      crearRuta(const OrdersMenuPage()),
     );
   } catch (e) {
     Navigator.pop(context); // Cerrar el diálogo de carga
@@ -56,7 +56,7 @@ Future<void> loginWithGoogle(BuildContext context) async {
     await authViewModel.googleSignIn();
     Navigator.push(
       context,
-      crearRuta(context, const OrdersMenuPage()),
+      crearRuta(const OrdersMenuPage()),
     );
   } catch (e) {
     showSnackBar(context, 'Algo salio mal, intentalo más tarde');

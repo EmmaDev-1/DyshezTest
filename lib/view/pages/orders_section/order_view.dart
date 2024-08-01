@@ -1,57 +1,63 @@
-import 'package:dyshez/model/orders.dart';
+// Archivo: order_view.dart
+import 'package:dyshez/Utils/select_order/color_select.dart';
+import 'package:dyshez/model/order_item_model.dart';
+import 'package:dyshez/model/order_model.dart'; // Asegúrate de importar el modelo de Order
 import 'package:dyshez/view/components/app_bar/app_bar.dart';
 import 'package:dyshez/view/components/buttons/buttons.dart';
 import 'package:dyshez/view/components/drawer_menu/drawer.dart';
+import 'package:dyshez/view_model/order_details_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class OrderViewPage extends StatefulWidget {
-  const OrderViewPage({super.key});
+  final OrderModel order;
+  const OrderViewPage({super.key, required this.order});
 
   @override
   State<OrderViewPage> createState() => _OrderViewPageState();
 }
 
 class _OrderViewPageState extends State<OrderViewPage> {
-  // Ejemplo de datos de pedido
-  final List<OrderItem> items = [
-    OrderItem(
-        name: 'Pizza italiana',
-        quantity: 2,
-        originalPrice: 320,
-        discountedPrice: 240),
-    OrderItem(
-        name: 'Rebanada de pastel de chocolate',
-        quantity: 3,
-        originalPrice: 410,
-        discountedPrice: 340),
-    OrderItem(
-        name: 'Refresco de 1 lt',
-        quantity: 1,
-        originalPrice: 62,
-        discountedPrice: 40),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    final orderDetailViewModel =
+        Provider.of<OrderDetailViewModel>(context, listen: false);
+    orderDetailViewModel.fetchOrderDetails(widget.order.ordersId);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final orderDetailViewModel = Provider.of<OrderDetailViewModel>(context);
+    final orderDetails = orderDetailViewModel.orderDetails;
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: CustomAppBar(title: 'Historial'),
+      appBar: CustomAppBar(
+        title: 'Historial',
+        onTap: () {
+          Navigator.pop(context);
+        },
+      ),
       drawer: DrawerMenu(),
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            restaurantImage(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            orderDetails(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              restaurantImage(widget.order.restaurantLogo),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+              orderDetailsWidget(orderDetails),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 
-  Widget restaurantImage() {
+  Widget restaurantImage(String imageUrl) {
     return Center(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.23,
@@ -60,21 +66,23 @@ class _OrderViewPageState extends State<OrderViewPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
             image: DecorationImage(
-                image: AssetImage('assets/images/restaurantImg.jpg'),
-                fit: BoxFit.cover)),
+                image: NetworkImage(imageUrl), fit: BoxFit.cover)),
       ),
     );
   }
 
-  Widget orderDetails() {
-    double totalOriginalPrice =
-        items.fold(0, (sum, item) => sum + item.originalPrice);
+  Widget orderDetailsWidget(List<OrderDetailModel> details) {
+    double totalOriginalPrice = details.fold(
+        0, (sum, item) => sum + (item.itemPrice) * (item.orderDetailQuantity));
     double totalDiscountedPrice =
-        items.fold(0, (sum, item) => sum + item.discountedPrice);
-    double discount = totalOriginalPrice - totalDiscountedPrice;
-    double shipping = 60.00;
-    double tip = 13.00;
-    double totalPaid = totalDiscountedPrice + shipping + tip;
+        totalOriginalPrice; // Ajusta esto según sea necesario
+    double discount = 0; // Ajusta esto según sea necesario
+    double shipping = widget.order.orderDeliveryPay;
+    double tip = widget.order.orderTipPay;
+    double totalPaid = totalDiscountedPrice + shipping + tip - discount;
+    String payMethod = widget.order.orderPayMethod;
+
+    Color colorOrder = selectOrderStatus(widget.order.ordersStatus);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -88,20 +96,20 @@ class _OrderViewPageState extends State<OrderViewPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Habibi',
+              widget.order.restaurantName,
               style: TextStyle(
                 fontFamily: 'QuickSand-Bold',
                 fontSize: 24,
               ),
             ),
             Text(
-              'Completado · Abr 13 a las 11:53 AM',
+              '${widget.order.ordersStatus} · ${DateFormat('MMM d h:mm a').format(widget.order.ordersDatetime)}',
               style: TextStyle(
-                color: Colors.green,
+                color: colorOrder,
               ),
             ),
             Text(
-              'Benito Juárez #213',
+              widget.order.restaurantLocation,
               style: TextStyle(
                 color: Colors.grey,
               ),
@@ -115,8 +123,12 @@ class _OrderViewPageState extends State<OrderViewPage> {
               ),
             ),
             SizedBox(height: 8),
-            Column(
-              children: items.map((item) {
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: details.length,
+              itemBuilder: (context, index) {
+                final item = details[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Row(
@@ -128,7 +140,7 @@ class _OrderViewPageState extends State<OrderViewPage> {
                             radius: 12,
                             backgroundColor: Colors.pink[100],
                             child: Text(
-                              'x${item.quantity}',
+                              'x${item.orderDetailQuantity}',
                               style: TextStyle(
                                 color: Colors.pink,
                                 fontWeight: FontWeight.bold,
@@ -139,7 +151,7 @@ class _OrderViewPageState extends State<OrderViewPage> {
                           Container(
                             width: MediaQuery.of(context).size.width * 0.4,
                             child: Text(
-                              item.name,
+                              item.itemName,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
@@ -149,15 +161,7 @@ class _OrderViewPageState extends State<OrderViewPage> {
                       Row(
                         children: [
                           Text(
-                            '\$${item.originalPrice}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              decoration: TextDecoration.lineThrough,
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Text(
-                            '\$${item.discountedPrice}',
+                            '\$${(item.itemPrice).toStringAsFixed(2)}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
@@ -167,7 +171,7 @@ class _OrderViewPageState extends State<OrderViewPage> {
                     ],
                   ),
                 );
-              }).toList(),
+              },
             ),
             Divider(),
             Row(
@@ -226,7 +230,7 @@ class _OrderViewPageState extends State<OrderViewPage> {
                     ),
                     SizedBox(width: 8),
                     Text(
-                      'ICICI Bank Card\n**** **** **** 5486',
+                      '$payMethod\n**** **** **** 5486',
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
@@ -237,11 +241,29 @@ class _OrderViewPageState extends State<OrderViewPage> {
             ButtonsComponents(
               color: const Color(0xFFE3026F),
               title: 'Reordenar',
-              onPress: () {},
+              onPress: () {
+                Fluttertoast.showToast(
+                  msg: "Función habilitada próximamente",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.white,
+                  textColor: Colors.black,
+                  fontSize: 16.0,
+                );
+              },
             ),
             SizedBox(height: 8),
             OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Fluttertoast.showToast(
+                  msg: "Función habilitada próximamente",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.white,
+                  textColor: Colors.black,
+                  fontSize: 16.0,
+                );
+              },
               style: OutlinedButton.styleFrom(
                 side:
                     BorderSide(color: const Color.fromARGB(255, 204, 204, 204)),

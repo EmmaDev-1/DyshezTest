@@ -129,7 +129,7 @@ class _VerifyNewPassPageState extends State<VerifyNewPassPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  crearRuta(context, const RegisterPage()),
+                  crearRuta(const RegisterPage()),
                 );
               },
               child: RichText(

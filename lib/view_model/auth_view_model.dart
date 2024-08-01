@@ -121,12 +121,22 @@ class AuthViewModel with ChangeNotifier {
   }
 
   Future<void> signOut() async {
-    // Cerrar sesión de Supabase
-    await supabase.auth.signOut();
-    // Cerrar sesión de Google
-    await _googleSignIn.signOut();
-    _user = null;
-    notifyListeners();
+    try {
+      // Cerrar sesión en Supabase
+      await supabase.auth.signOut();
+
+      // Cerrar sesión en Google si el usuario ha iniciado sesión con Google
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.signOut();
+      }
+
+      // Limpiar el modelo de usuario y notificar a los listeners
+      _user = null;
+      notifyListeners();
+    } catch (e) {
+      print('Error al cerrar sesión: $e');
+      throw Exception('Error al cerrar sesión.');
+    }
   }
 
   Future<void> verifyToken(String email, String token) async {

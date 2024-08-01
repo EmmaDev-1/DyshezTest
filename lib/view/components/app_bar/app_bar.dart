@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final void Function()? onTap;
 
-  CustomAppBar({required this.title});
+  CustomAppBar({
+    required this.title,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +16,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.grey[200],
       surfaceTintColor: Colors.grey[200],
       leading: GestureDetector(
-        onTap: () {
-          Navigator.of(context).pop();
-        },
+        onTap: onTap,
         child: Image.asset(
           'assets/images/arrowback.png',
           scale: 18,
