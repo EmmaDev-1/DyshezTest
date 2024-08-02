@@ -1,6 +1,7 @@
 // Archivo: main.dart
 import 'package:dyshez/Utils/deep_links/deeplink_handler.dart';
 import 'package:dyshez/view_model/order_details_view_model.dart';
+import 'package:dyshez/view_model/user_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_) => OrderViewModel()),
         ChangeNotifierProvider(create: (_) => OrderDetailViewModel()),
+        ChangeNotifierProvider(create: (_) => UserViewModel()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

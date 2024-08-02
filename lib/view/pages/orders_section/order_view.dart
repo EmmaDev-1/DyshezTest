@@ -1,10 +1,12 @@
 // Archivo: order_view.dart
+import 'package:dyshez/Utils/navigation/navegationAnimationRightLeft.dart';
 import 'package:dyshez/Utils/select_order/color_select.dart';
 import 'package:dyshez/model/order_item_model.dart';
 import 'package:dyshez/model/order_model.dart'; // Asegúrate de importar el modelo de Order
 import 'package:dyshez/view/components/app_bar/app_bar.dart';
 import 'package:dyshez/view/components/buttons/buttons.dart';
 import 'package:dyshez/view/components/drawer_menu/drawer.dart';
+import 'package:dyshez/view/pages/orders_section/order_ticket.dart';
 import 'package:dyshez/view_model/order_details_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -255,13 +257,10 @@ class _OrderViewPageState extends State<OrderViewPage> {
             SizedBox(height: 8),
             OutlinedButton(
               onPressed: () {
-                Fluttertoast.showToast(
-                  msg: "Función habilitada próximamente",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor: Colors.white,
-                  textColor: Colors.black,
-                  fontSize: 16.0,
+                Navigator.push(
+                  context,
+                  crearRuta(OrderTicketPage(
+                      order: widget.order, orderDetails: details)),
                 );
               },
               style: OutlinedButton.styleFrom(

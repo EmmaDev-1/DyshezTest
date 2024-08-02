@@ -10,7 +10,6 @@ import 'package:dyshez/view/pages/orders_section/order_view.dart';
 import 'package:dyshez/view_model/order_details_view_model.dart';
 import 'package:dyshez/view_model/order_view_model.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:dyshez/model/order_model.dart';
@@ -50,7 +49,7 @@ class _OrdersMenuPageState extends State<OrdersMenuPage> {
           SignOutUser(context);
         },
       ),
-      drawer: DrawerMenu(),
+      drawer: const DrawerMenu(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -68,10 +67,10 @@ class _OrdersMenuPageState extends State<OrdersMenuPage> {
                       color: Colors.grey[700],
                     ),
                   ),
-                  OrderFilterMenu(),
+                  const OrderFilterMenu(),
                 ],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
@@ -79,11 +78,7 @@ class _OrdersMenuPageState extends State<OrdersMenuPage> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: isLoading
-                      ? Center(
-                          child: Lottie.asset('assets/animations/loading.json',
-                              repeat: true,
-                              frameRate: FrameRate.max,
-                              height: 200))
+                      ? const Center(child: CircularProgressIndicator())
                       : orderViewModel.orders.isEmpty
                           ? Center(
                               child: Text(
@@ -123,12 +118,20 @@ class _OrdersMenuPageState extends State<OrdersMenuPage> {
 
     return ListTile(
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(order.restaurantLogo),
         radius: 24,
+        child: ClipOval(
+          child: FadeInImage.assetNetwork(
+            placeholder: 'assets/images/logo.png',
+            image: order.restaurantLogo,
+            fit: BoxFit.cover,
+            width: 48,
+            height: 48,
+          ),
+        ),
       ),
       title: Text(
         order.restaurantName,
-        style: TextStyle(
+        style: const TextStyle(
           fontFamily: 'QuickSand-Bold',
           fontSize: 16,
         ),
@@ -172,14 +175,14 @@ class _OrdersMenuPageState extends State<OrdersMenuPage> {
             icon,
             scale: 25,
           ),
-          SizedBox(width: 8),
-          Icon(
+          const SizedBox(width: 8),
+          const Icon(
             Icons.keyboard_arrow_right_rounded,
             size: 25,
           )
         ],
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       onTap: () {
         Navigator.push(
           context,

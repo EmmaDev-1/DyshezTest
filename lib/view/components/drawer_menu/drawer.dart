@@ -1,23 +1,59 @@
+// Archivo: drawer.dart
 import 'package:flutter/material.dart';
 import 'package:dyshez/Utils/dialogs/sign_out_dialog.dart';
 import 'package:dyshez/view/components/drawer_menu/drawer_tile.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:dyshez/view_model/auth_view_model.dart';
 
 class DrawerMenu extends StatelessWidget {
   const DrawerMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authViewModel = Provider.of<AuthViewModel>(context);
+
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.tertiary,
       child: Column(
         children: [
           DrawerHeader(
-            child: GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                radius: 60,
-              ),
+            child: Stack(
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    Fluttertoast.showToast(
+                      msg: "Acción habilitada próximamente",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      backgroundColor: Colors.white,
+                      textColor: Colors.black,
+                      fontSize: 16.0,
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: authViewModel.user?.imageUrl != null
+                        ? NetworkImage(authViewModel.user!.imageUrl!)
+                        : null,
+                    child: authViewModel.user?.imageUrl == null
+                        ? Icon(Icons.person, size: 60)
+                        : null,
+                  ),
+                ),
+                Positioned(
+                  right: 0,
+                  bottom: 10,
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.edit,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           SizedBox(

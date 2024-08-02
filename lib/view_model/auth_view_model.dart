@@ -38,45 +38,52 @@ class AuthViewModel with ChangeNotifier {
     }
   }
 
-  Future<void> signIn(String username, String password) async {
+  Future<void> signIn(String identifier, String password) async {
     try {
-      // Imprimir los valores proporcionados para depuración
       print('Intentando iniciar sesión con:');
-      print('Username: $username');
+      print('Identificador: $identifier');
       print('Contraseña: $password');
 
-      // Realizar una consulta a la tabla 'users' para obtener el email correspondiente al username
-      final response = await supabase
-          .from('users')
-          .select('id, email')
-          .eq('username', username)
-          .single();
+      String email;
+      String id;
+      String? imageUrl;
 
-      // Imprimir la respuesta obtenida de la consulta
-      print('Respuesta de la consulta: $response');
+      if (identifier.contains('@')) {
+        email = identifier;
+        final response = await supabase
+            .from('users')
+            .select('id, image')
+            .eq('email', email)
+            .single();
+        print('Respuesta de la consulta: $response');
+        id = response['id'];
+        imageUrl = response['image'];
+      } else {
+        final response = await supabase
+            .from('users')
+            .select('id, email, image')
+            .eq('username', identifier)
+            .single();
+        print('Respuesta de la consulta: $response');
+        email = response['email'];
+        id = response['id'];
+        imageUrl = response['image'];
+      }
 
-      // Extraer el email y el id de la respuesta
-      final email = response['email'];
-      final id = response['id'];
-
-      // Imprimir el email y el id para verificación
       print('Email obtenido: $email');
       print('ID obtenido: $id');
+      print('URL de imagen obtenida: $imageUrl');
 
-      // Realizar la autenticación con el email obtenido y la contraseña proporcionada
       await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
 
-      // Actualizar el modelo de usuario y notificar a los listeners
-      _user = UserModel(id: id, email: email);
+      _user = UserModel(id: id, email: email, imageUrl: imageUrl);
       notifyListeners();
 
-      // Imprimir mensaje de éxito
       print('Inicio de sesión exitoso');
     } catch (e) {
-      // Manejar errores y lanzar una excepción con un mensaje adecuado
       print('Error durante el inicio de sesión: $e');
       throw Exception('Usuario no encontrado o contraseña incorrecta.');
     }

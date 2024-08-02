@@ -273,7 +273,16 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.015),
           GestureDetector(
-            onTap: () async {},
+            onTap: () async {
+              Fluttertoast.showToast(
+                msg: "Función habilitada próximamente",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.white,
+                textColor: Colors.black,
+                fontSize: 16.0,
+              );
+            },
             child: Container(
               height: MediaQuery.of(context).size.height * 0.06,
               width: MediaQuery.of(context).size.width * 0.85,
