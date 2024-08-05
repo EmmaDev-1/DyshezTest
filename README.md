@@ -40,6 +40,8 @@ The app supports Google Sign-In and follows the MVVM design pattern with Provide
 
 ◽ Ensure you have Flutter installed. You can download it from Flutter's official website.
 
+◽ Ensure Flutter version 3.19.5
+
 ◽ Make sure your Android device or emulator is set up for development.
 
 ### Steps
